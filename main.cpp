@@ -225,7 +225,7 @@ constexpr void handleEvent(const EventType& event) noexcept {
         }
     }
 }
-
+struct test {};
 // C++20 Namespace organization
 namespace SDL_App {
     
