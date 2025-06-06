@@ -5,10 +5,12 @@
 #ifndef SDLFACTORYFUNCTIONS_HPP
 #define SDLFACTORYFUNCTIONS_HPP
 #include <expected>
+#include <filesystem>
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <string>
 
-#include "SDLDesignatedInitializersStructures.hpp"
+#include "SDLArgumentsStructure.hpp"
 #include "SDLError.hpp"
 #include "SdlManager.hpp"
 #include "SDLResourcesAliases.hpp"
@@ -28,12 +30,11 @@ initializeSDL() noexcept {
 }
 
 // POPRAWKA: Bezpieczne tworzenie okna
-[[nodiscard]] auto createWindow(const WindowConfig& config) noexcept
+[[nodiscard]] auto createWindow(const WindowConfig &config) noexcept
     -> std::expected<SDL_WindowPtr, SDL_Error> {
-
     try {
-        auto* window = SDL_CreateWindow(
-            config.title.c_str(),  // POPRAWKA: c_str() zamiast data()
+        auto *window = SDL_CreateWindow(
+            config.title.c_str(), // POPRAWKA: c_str() zamiast data()
             config.width,
             config.height,
             config.flags
@@ -51,15 +52,14 @@ initializeSDL() noexcept {
     }
 }
 
-[[nodiscard]] auto createRenderer(SDL_Window* window, const RenderConfig& config) noexcept
+[[nodiscard]] auto createRenderer(SDL_Window *window, const RenderConfig &config) noexcept
     -> std::expected<SDL_RendererPtr, SDL_Error> {
-
     try {
-        const char* name = config.renderer_name.has_value()
-            ? config.renderer_name->c_str()  // POPRAWKA: c_str()
-            : nullptr;
+        const char *name = config.renderer_name.has_value()
+                               ? config.renderer_name->c_str() // POPRAWKA: c_str()
+                               : nullptr;
 
-        auto* renderer = SDL_CreateRenderer(window, name);
+        auto *renderer = SDL_CreateRenderer(window, name);
         if (!renderer) [[unlikely]] {
             std::cerr << "Renderer creation failed: " << SDL_GetError() << "\n";
             return std::unexpected(SDL_Error::RendererCreationFailed);
@@ -69,6 +69,27 @@ initializeSDL() noexcept {
         return SDL_RendererPtr{renderer};
     } catch (...) {
         return std::unexpected(SDL_Error::RendererCreationFailed);
+    }
+}
+
+[[nodiscard]] auto createTexture(SDL_Renderer *renderer,
+                                 const std::string &file_path) noexcept -> std::expected<SDL_TexturePtr, SDL_Error> {
+    try {
+        if (!std::filesystem::exists(file_path)) {
+            std::cerr << "File does not exist: " << file_path << "\n";
+            return std::unexpected(SDL_Error::TextureCreationFailed);
+        }
+
+        auto *texture = IMG_LoadTexture(renderer, file_path.c_str());
+        if (!texture) [[unlikely]] {
+            std::cerr << "Texture creation failed: " << SDL_GetError() << "\n";
+            return std::unexpected(SDL_Error::TextureCreationFailed);
+        }
+
+        std::cout << "✅ Tekstura utworzona\n";
+        return SDL_TexturePtr{texture};
+    } catch (...) {
+        return std::unexpected(SDL_Error::TextureCreationFailed);
     }
 }
 

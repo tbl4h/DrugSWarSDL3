@@ -13,7 +13,8 @@ enum class [[nodiscard]] SDL_Error : std::uint8_t {
     InitFailed = 1,
     WindowCreationFailed,
     RendererCreationFailed,
-    RenderingFailed
+    RenderingFailed,
+    TextureCreationFailed,
 };
 
 // C++20 constexpr
@@ -23,6 +24,7 @@ constexpr std::string_view get_error_prefix(SDL_Error error) noexcept {
         case SDL_Error::WindowCreationFailed: return "Window creation failed";
         case SDL_Error::RendererCreationFailed: return "Renderer creation failed";
         case SDL_Error::RenderingFailed: return "Rendering failed";
+        case SDL_Error::TextureCreationFailed: return "Texture creation failed";
     }
     return "Unknown error";
 }
