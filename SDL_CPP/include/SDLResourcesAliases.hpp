@@ -9,6 +9,8 @@
 #include "SDLResourcesConcepts.hpp"
 #include "SDLDeleters.hpp"
 
+struct SDLState;
+
 // C++17 Template aliases z C++20 concepts
 template<SDL_Resource T>
 using SDL_UniquePtr = std::unique_ptr<T, SDL_CustomDeleter<T> >;
@@ -26,5 +28,7 @@ using SDL_WindowSharedPtr = SDL_SharedPtr<SDL_Window>;
 using SDL_RendererSharedPtr = SDL_SharedPtr<SDL_Renderer>;
 using SDL_TextureSharedPtr = SDL_SharedPtr<SDL_Texture>;
 using SDL_SurfaceSharedPtr = SDL_SharedPtr<SDL_Surface>;
+
+using SDL_StateSharedPtr = std::shared_ptr<SDLState>;
 
 #endif //SDLRESOURCESALIASES_HPP

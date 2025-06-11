@@ -6,6 +6,11 @@ set(CMAKE_CXX_STANDARD 23)
 # Włącz FetchContent
 include(FetchContent)
 
+# Włącz IPO/LTO jeśli jest dostępne
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+
+
 # Ustaw katalog dla zewnętrznych bibliotek
 set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/external)
 
@@ -95,3 +100,10 @@ target_include_directories(DrugSWarSDL3 PRIVATE
         ${CMAKE_SOURCE_DIR}/external/SDL3_image/include
         ${CMAKE_SOURCE_DIR}/external/tileson/include
 )
+
+if (ipo_supported)
+    set_property(TARGET DrugSWarSDL3 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    message(STATUS "IPO/LTO włączone dla DrugSWarSDL3")
+else ()
+    message(STATUS "IPO/LTO nie jest dostępne: ${ipo_error}")
+endif ()

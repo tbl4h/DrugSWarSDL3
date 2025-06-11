@@ -20,14 +20,14 @@ void performRender(SDL_Renderer *renderer, std::span<const Uint8, 4> color) noex
     //SDL_RenderPresent(renderer);
 }
 
-void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, float x, float y) noexcept {
+void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, float x, float y, float width, float height) noexcept {
     if (!renderer || !texture) return;
 
     // Prefetch renderer do cache L1
-    _mm_prefetch(reinterpret_cast<const char*>(renderer), _MM_HINT_T0);
+    // _mm_prefetch(reinterpret_cast<const char*>(renderer), _MM_HINT_T0);
 
 
-    SDL_FRect dst_rect{x, y, 32, 32};
+    SDL_FRect dst_rect{x, y, width, height};
     //SDL_GetTextureSize(texture, &dst_rect.w, &dst_rect.h);
 
     SDL_RenderTexture(renderer, texture, &dst_rect, &dst_rect);

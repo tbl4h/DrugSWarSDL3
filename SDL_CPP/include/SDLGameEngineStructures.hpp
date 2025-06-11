@@ -11,9 +11,10 @@ const std::string project_root = std::filesystem::current_path().parent_path().s
 const std::string idle_texture_path = project_root + "/Data/idle.png";
 
 
-struct alignas (64) SDLState {
+struct SDLState {
     SDL_WindowSharedPtr window{};
     SDL_RendererSharedPtr renderer{};
+    int width, height, logW, logH;
 };
 
 #endif //SDL_GAMEENGINESTRUCTURES_HPP
